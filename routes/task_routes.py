@@ -1,4 +1,5 @@
-from flask import Blueprint,request,jsonify  
+from flask import Blueprint,request,jsonify
+from flask import render_template 
 from services.task_services import get_connection
 import logging
 
@@ -8,7 +9,7 @@ task_bp=Blueprint("task_bp",__name__)
 
 @task_bp.route("/")
 def home():
-    return "API is running successfully "
+    return render_template("index.html")
 
 @task_bp.route("/task", methods=["POST"])
 def insert_task():

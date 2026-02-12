@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Task Manager</title>
+</head>
+<body>
+    <h1>Task Manager</h1>
+
+    <h3>Add Task</h3>
+    <input type="text" id="taskInput" placeholder="Enter task">
+    <button onclick="addTask()">Add</button>
+
+    <h3>Tasks</h3>
+    <ul id="taskList"></ul>
+
+<script>
+const API_URL = window.location.origin;
+
+async function fetchTasks() {
+    const res = await fetch(API_URL + "/tasks");
+    const data = await res.json();
+
+    const list = document.getElementById("taskList");
+    list.innerHTML = "";
+
+    data.forEach(task => {
+        const li = document.createElement("li");
+        li.innerHTML = `
+            ${task.title}
+            <button onclick="deleteTask(${task.id})">Delete</button>
+        `;
+        list.appendChild(li);
+    });
+}
+
+async function addTask() {
+    const title = document.getElementById("taskInput").value;
+
+    await fetch(API_URL + "/tasks", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title: title })
+    });
+
+    document.getElementById("taskInput").value = "";
+    fetchTasks();
+}
+
+async function deleteTask(id) {
+    await fetch(API_URL + "/tasks/" + id, {
+        method: "DELETE"
+    });
+    fetchTasks();
+}
+
+fetchTasks();
+</script>
+
+</body>
+</html>
