@@ -2,16 +2,87 @@
 <html>
 <head>
     <title>Task Manager</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to right, #4e73df, #1cc88a);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            width: 400px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        input {
+            width: 70%;
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 5px;
+            background-color: #4e73df;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            margin-top: 20px;
+        }
+
+        li {
+            background: #f8f9fc;
+            padding: 10px;
+            margin-bottom: 8px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .delete-btn {
+            background-color: #e74a3b;
+        }
+
+        .delete-btn:hover {
+            opacity: 0.8;
+        }
+    </style>
 </head>
 <body>
+
+<div class="container">
     <h1>Task Manager</h1>
 
-    <h3>Add Task</h3>
-    <input type="text" id="taskInput" placeholder="Enter task">
-    <button onclick="addTask()">Add</button>
+    <div>
+        <input type="text" id="taskInput" placeholder="Enter task">
+        <button onclick="addTask()">Add</button>
+    </div>
 
-    <h3>Tasks</h3>
     <ul id="taskList"></ul>
+</div>
 
 <script>
 const API_URL = window.location.origin;
@@ -27,7 +98,7 @@ async function fetchTasks() {
         const li = document.createElement("li");
         li.innerHTML = `
             ${task.title}
-            <button onclick="deleteTask(${task.id})">Delete</button>
+            <button class="delete-btn" onclick="deleteTask(${task.id})">Delete</button>
         `;
         list.appendChild(li);
     });
@@ -35,6 +106,8 @@ async function fetchTasks() {
 
 async function addTask() {
     const title = document.getElementById("taskInput").value;
+
+    if (!title) return;
 
     await fetch(API_URL + "/tasks", {
         method: "POST",
