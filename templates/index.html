@@ -2,131 +2,168 @@
 <html>
 <head>
     <title>Task Manager</title>
+
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background: linear-gradient(to right, #4e73df, #1cc88a);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
             margin: 0;
+            font-family: Arial, sans-serif;
+            background: url("https://images.unsplash.com/photo-1506784983877-45594efa4cbe") no-repeat center center fixed;
+            background-size: cover;
+            backdrop-filter: blur(4px);
+            color: white;
         }
 
         .container {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            width: 400px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            width: 500px;
+            margin: 60px auto;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
         }
 
         h1 {
             text-align: center;
-            margin-bottom: 20px;
         }
 
         input {
             width: 70%;
-            padding: 8px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 8px;
+            border: none;
+            margin-bottom: 10px;
         }
 
         button {
-            padding: 8px 12px;
+            padding: 10px 15px;
+            border-radius: 8px;
             border: none;
-            border-radius: 5px;
-            background-color: #4e73df;
-            color: white;
             cursor: pointer;
+            margin: 5px 0;
         }
 
-        button:hover {
-            opacity: 0.9;
+        .add-btn {
+            background: #00c853;
+            color: white;
+        }
+
+        .delete-btn {
+            background: #d50000;
+            color: white;
+        }
+
+        .complete-btn {
+            background: #2962ff;
+            color: white;
         }
 
         ul {
             list-style: none;
             padding: 0;
-            margin-top: 20px;
         }
 
         li {
-            background: #f8f9fc;
+            background: rgba(255,255,255,0.1);
             padding: 10px;
+            border-radius: 8px;
             margin-bottom: 8px;
-            border-radius: 5px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
         }
 
-        .delete-btn {
-            background-color: #e74a3b;
+        .completed {
+            text-decoration: line-through;
+            color: #aaa;
         }
 
-        .delete-btn:hover {
-            opacity: 0.8;
-        }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>Task Manager</h1>
 
-    <div>
-        <input type="text" id="taskInput" placeholder="Enter task">
-        <button onclick="addTask()">Add</button>
-    </div>
+    <h1>📝 My Task Manager</h1>
 
+    <input type="text" id="title" placeholder="Enter new task">
+    <button class="add-btn" onclick="addTask()">Add Task</button>
+
+    <hr>
+
+    <h3>Your Tasks</h3>
     <ul id="taskList"></ul>
+
 </div>
 
 <script>
-const API_URL = window.location.origin;
 
-async function fetchTasks() {
-    const res = await fetch(API_URL + "/tasks");
-    const data = await res.json();
+const API = window.location.origin;
+
+// Load tasks
+async function loadTasks() {
+    const response = await fetch(API + "/task");
+    const data = await response.json();
 
     const list = document.getElementById("taskList");
     list.innerHTML = "";
 
     data.forEach(task => {
         const li = document.createElement("li");
+
+        li.className = task.completed ? "completed" : "";
+
         li.innerHTML = `
-            ${task.title}
+            <strong>ID:</strong> ${task.id} <br>
+            <strong>Title:</strong> ${task.title} <br>
+            <strong>Status:</strong> ${task.completed ? "Completed" : "Pending"} <br>
+            <button class="complete-btn" onclick="completeTask(${task.id})">Complete</button>
             <button class="delete-btn" onclick="deleteTask(${task.id})">Delete</button>
         `;
+
         list.appendChild(li);
     });
 }
 
+// Add task
 async function addTask() {
-    const title = document.getElementById("taskInput").value;
+    const titleInput = document.getElementById("title");
+    const title = titleInput.value;
 
-    if (!title) return;
+    if (!title) {
+        alert("Please enter a task");
+        return;
+    }
 
-    await fetch(API_URL + "/tasks", {
+    await fetch(API + "/task", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+            "Content-Type": "application/json"
+        },
         body: JSON.stringify({ title: title })
     });
 
-    document.getElementById("taskInput").value = "";
-    fetchTasks();
+    titleInput.value = "";
+    loadTasks();
 }
 
+// Delete task
 async function deleteTask(id) {
-    await fetch(API_URL + "/tasks/" + id, {
+    await fetch(API + "/task/" + id, {
         method: "DELETE"
     });
-    fetchTasks();
+
+    loadTasks();
 }
 
-fetchTasks();
+// Complete task
+async function completeTask(id) {
+    await fetch(API + "/task/" + id + "/complete", {
+        method: "PATCH"
+    });
+
+    loadTasks();
+}
+
+// Auto load when page opens
+loadTasks();
+
 </script>
 
 </body>
