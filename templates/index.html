@@ -7,23 +7,36 @@
         body {
             margin: 0;
             font-family: Arial, sans-serif;
-            background: url("https://images.unsplash.com/photo-1506784983877-45594efa4cbe") no-repeat center center fixed;
+            background: url("https://images.unsplash.com/photo-1507525428034-b723cf961d3e") no-repeat center center fixed;
             background-size: cover;
-            backdrop-filter: blur(4px);
             color: white;
+        }
+
+        .overlay {
+            background: rgba(0, 0, 0, 0.55);
+            min-height: 100vh;
+            padding-top: 40px;
         }
 
         .container {
             width: 500px;
-            margin: 60px auto;
-            background: rgba(0, 0, 0, 0.7);
+            margin: auto;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(8px);
             padding: 25px;
             border-radius: 15px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            box-shadow: 0 0 25px rgba(0,0,0,0.6);
         }
 
         h1 {
             text-align: center;
+        }
+
+        .quote {
+            text-align: center;
+            font-style: italic;
+            margin-bottom: 15px;
+            color: #f1f1f1;
         }
 
         input {
@@ -40,6 +53,7 @@
             border: none;
             cursor: pointer;
             margin: 5px 0;
+            font-weight: bold;
         }
 
         .add-btn {
@@ -63,7 +77,7 @@
         }
 
         li {
-            background: rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.15);
             padding: 10px;
             border-radius: 8px;
             margin-bottom: 8px;
@@ -71,16 +85,26 @@
 
         .completed {
             text-decoration: line-through;
-            color: #aaa;
+            color: #ccc;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            opacity: 0.8;
         }
 
     </style>
 </head>
 <body>
 
+<div class="overlay">
 <div class="container">
 
-    <h1>📝 My Task Manager</h1>
+    <h1>🌿 Healthy Task Manager</h1>
+
+    <div class="quote" id="quote"></div>
 
     <input type="text" id="title" placeholder="Enter new task">
     <button class="add-btn" onclick="addTask()">Add Task</button>
@@ -90,11 +114,30 @@
     <h3>Your Tasks</h3>
     <ul id="taskList"></ul>
 
+    <div class="footer">
+        Developed by Rehan Mumtaz 💻🔥
+    </div>
+
+</div>
 </div>
 
 <script>
 
 const API = window.location.origin;
+
+const quotes = [
+    "Discipline equals freedom.",
+    "Small daily improvements lead to massive results.",
+    "Consistency beats motivation.",
+    "Your future is built by what you do today.",
+    "Push yourself. No one else will do it for you."
+];
+
+// Random motivational quote
+function loadQuote() {
+    const random = quotes[Math.floor(Math.random() * quotes.length)];
+    document.getElementById("quote").innerText = random;
+}
 
 // Load tasks
 async function loadTasks() {
@@ -161,7 +204,7 @@ async function completeTask(id) {
     loadTasks();
 }
 
-// Auto load when page opens
+loadQuote();
 loadTasks();
 
 </script>
