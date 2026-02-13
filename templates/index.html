@@ -7,37 +7,29 @@
         body {
             margin: 0;
             font-family: Arial, sans-serif;
-            background: url("https://share.google/4WDBr4qxgPPbf4GAJ") no-repeat center center fixed;
+            background: url("https://images.unsplash.com/photo-1506784983877-45594efa4cbe") no-repeat center center fixed;
             background-size: cover;
+            backdrop-filter: blur(4px);
             color: white;
-        }
-
-        .overlay {
-            background: rgba(0, 0, 0, 0.55);
-            min-height: 100vh;
-            padding-top: 50px;
         }
 
         .container {
             width: 500px;
-            margin: auto;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(8px);
+            margin: 60px auto;
+            background: rgba(0, 0, 0, 0.7);
             padding: 25px;
             border-radius: 15px;
-            box-shadow: 0 0 25px rgba(0,0,0,0.6);
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
         }
 
         h1 {
             text-align: center;
-            margin-bottom: 10px;
         }
 
         .quote {
             text-align: center;
-            font-style: italic;
-            margin-bottom: 20px;
-            color: #f1f1f1;
+            margin-bottom: 15px;
+            font-weight: bold;
         }
 
         input {
@@ -54,7 +46,6 @@
             border: none;
             cursor: pointer;
             margin: 5px 0;
-            font-weight: bold;
         }
 
         .add-btn {
@@ -78,7 +69,7 @@
         }
 
         li {
-            background: rgba(255,255,255,0.15);
+            background: rgba(255,255,255,0.1);
             padding: 10px;
             border-radius: 8px;
             margin-bottom: 8px;
@@ -86,7 +77,7 @@
 
         .completed {
             text-decoration: line-through;
-            color: #ccc;
+            color: #aaa;
         }
 
         .footer {
@@ -100,7 +91,6 @@
 </head>
 <body>
 
-<div class="overlay">
 <div class="container">
 
     <h1>Task Manager</h1>
@@ -120,25 +110,25 @@
     </div>
 
 </div>
-</div>
 
 <script>
 
 const API = window.location.origin;
 
 const quotes = [
-    "Discipline equals freedom.",
-    "Small daily improvements lead to massive results.",
-    "Consistency beats motivation.",
-    "Your future is built by what you do today.",
-    "Push yourself. No one else will do it for you."
+    "Discipline builds success.",
+    "Consistency creates results.",
+    "Focus on progress, not perfection.",
+    "Small steps lead to big achievements.",
+    "Work hard in silence, let success speak."
 ];
 
 function loadQuote() {
     const random = quotes[Math.floor(Math.random() * quotes.length)];
-    document.getElementById("quote").innerText = random;
+    document.getElementById("quote").innerText = `"${random}"`;
 }
 
+// Load tasks
 async function loadTasks() {
     const response = await fetch(API + "/task");
     const data = await response.json();
@@ -162,6 +152,7 @@ async function loadTasks() {
         list.appendChild(li);
     });
 }
+
 
 async function addTask() {
     const titleInput = document.getElementById("title");
@@ -191,6 +182,7 @@ async function deleteTask(id) {
 
     loadTasks();
 }
+
 
 async function completeTask(id) {
     await fetch(API + "/task/" + id + "/complete", {
